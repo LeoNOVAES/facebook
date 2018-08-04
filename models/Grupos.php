@@ -1,0 +1,63 @@
+<?php
+  class Grupos extends model{
+
+      public function getGrupos(){
+          $array = array();
+          $sql = "SELECT id,titulo FROM grupos";
+          $sql = $this->db->query($sql);
+
+          if($sql->rowCount() > 0){
+            $array = $sql->fetchAll();
+
+          }
+
+
+          return $array;
+      }
+
+      public function criarGrupo($titulo){
+        $id_usu = $_SESSION['lgsocial'];
+
+        $sql = "INSERT INTO grupos SET id_usuario = '$id_usu', titulo = '$titulo' ";
+        $this->db->query($sql);
+        $id = $this->db->lastInsertId();
+        $sql = "INSERT INTO grupos_membros SET id_grupo = '$id', id_usuario = '$id_usu'";
+        $this->db->query($sql);
+        return $id;
+
+
+      }
+
+      public function getInfo($id_grupo){
+          $array = array();
+          $sql = "SELECT * FROM grupos WHERE id ='$id_grupo'";
+          $sql = $this->db->query($sql);
+
+          if($sql->rowCount() > 0 ){
+              $array = $sql->fetch();
+
+
+          }return $array;
+
+
+      }
+
+      public function isMembro($id_grupo,$id_usu){
+          $sql = "SELECT * FROM grupos_membros WHERE id_grupo = '$id_grupo' AND id_usuario = '$id_usu' ";
+          $sql = $this->db->query($sql);
+
+          if($sql->rowCount() > 0 ){
+            return true;
+
+          }else{
+            return false;
+          }
+
+
+      }
+
+
+
+  }
+
+?>
